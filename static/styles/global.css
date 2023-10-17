@@ -1,0 +1,24 @@
+:root {
+  --grey: #e6e6e6;
+  --dark-grey: #aaa;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+* {
+  font-family: 'San Francisco', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-color: var(--grey);
+}
+
+h1 {
+  font-family: 'Young Serif', serif;
+}
+
+button {
+  cursor: pointer;
+}

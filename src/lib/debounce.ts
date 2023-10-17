@@ -1,0 +1,9 @@
+const debounce = (func: (e: Event) => void, delay: number) => {
+	let timeout: number;
+	return function (...args) {
+		clearTimeout(timeout);
+		timeout = setTimeout(() => func(...args), delay);
+	};
+};
+
+export default debounce;
