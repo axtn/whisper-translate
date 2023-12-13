@@ -2,7 +2,7 @@
 
 Plug 'n play private translation website using [`Google Translate API Basic`](https://cloud.google.com/translate). Everything you translate on https://translate.google.com operates under Google's Global Privacy Policy, which means they can store and view your translations. This project allows you to use Google Translate API easily for your own private translations. As a business offering, Google Translate API operates under [`its own specific privacy policy`](https://cloud.google.com/translate/data-usage).
 
-![Whisper Screenshot](https://github.com/axtn/whisper-translate/assets/6938887/e7d1ef2d-e94e-42c1-8508-9163ce3b7061)
+![Whisper Demo](https://github.com/axtn/whisper-translate/assets/6938887/853e0310-0f1c-494b-8b4f-b2aca351f32e)
 
 ## Features
 * Language -> Language text translation
