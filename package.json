@@ -28,6 +28,9 @@
 		"vite": "^4.4.2"
 	},
 	"type": "module",
+	"engines": {
+		"node": "22.x"
+  },
 	"dependencies": {
 		"@google-cloud/translate": "^8.0.2",
 		"svelte-french-toast": "^1.2.0"
