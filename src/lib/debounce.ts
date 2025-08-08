@@ -1,8 +1,10 @@
-const debounce = (func: (e: Event) => void, delay: number) => {
-	let timeout: number;
-	return function (...args) {
-		clearTimeout(timeout);
-		timeout = setTimeout(() => func(...args), delay);
+const debounce = <T extends any[]>(func: (...args: T) => void, delay: number) => {
+	let timeoutId: number | undefined;
+	return function (...args: T) {
+		if (timeoutId !== undefined) {
+			clearTimeout(timeoutId);
+		}
+		timeoutId = window.setTimeout(() => func(...args), delay);
 	};
 };
 

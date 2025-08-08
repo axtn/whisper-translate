@@ -13,6 +13,7 @@
   import debounce from '$lib/debounce.js';
   import copySvg from '$lib/img/copy.svg?raw';
   import lockLogoSvg from '$lib/img/lockLogo.svg?raw';
+  import closeSvg from '$lib/img/close.svg?raw';
 
   let abortController = new AbortController();
   let text = '';
@@ -21,6 +22,7 @@
   let target = 'en';
   let detectedSource = '';
   let currentRequest: Promise<void> | Promise<TranslateApiResponse> = Promise.resolve();
+  let textareaEl: HTMLTextAreaElement;
 
   $: detectedSourceLanguage = detectedSource ? data.languages.find((l) => l.code === detectedSource)?.name : '';
   $: sourceLanguages = [
@@ -70,11 +72,12 @@
       translation = json.translation;
       detectedSource = json.detectedLanguageCode ?? '';
     } catch (err) {
-      if (err.name === 'AbortError') {
+      const errorObj = err as { name?: string; message?: string };
+      if (errorObj?.name === 'AbortError') {
         return;
       }
 
-      toast.danger(err.message ?? 'Server error');
+      toast.danger(errorObj?.message ?? 'Server error');
     }
   };
 
@@ -93,6 +96,18 @@
   const copyToClipboard = async () => {
     await navigator.clipboard.writeText(translation);
     toast.success('Translation copied');
+  };
+
+  const resetAll = () => {
+    if (!abortController.signal.aborted) {
+      abortController.abort();
+    }
+    abortController = new AbortController();
+    text = '';
+    translation = '';
+    detectedSource = '';
+    currentRequest = Promise.resolve();
+    textareaEl?.focus();
   };
 
   const swapLanguages = async () => {
@@ -129,10 +144,17 @@
     <div class="source">
       <div class="language-display language-display-source">
         <LangSelect languages={sourceLanguages} onChange={onLanguageChange} bind:value={source} />
-        <span>{text.length.toLocaleString()} / {maxTranslationLength.toLocaleString()}</span>
+        <div class="source-actions">
+          <span class="char-count">{text.length.toLocaleString()} / {maxTranslationLength.toLocaleString()}</span>
+          {#if text.length || translation.length}
+            <button class="icon-btn" on:click={resetAll} title="Clear" aria-label="Clear input and output">
+              {@html closeSvg}
+            </button>
+          {/if}
+        </div>
       </div>
 
-      <textarea bind:value={text} on:input={onInput} maxlength="{maxTranslationLength}" placeholder="Enter text" />
+      <textarea bind:this={textareaEl} bind:value={text} on:input={onInput} maxlength="{maxTranslationLength}" placeholder="Enter text" />
     </div>
 
     <div class="divider">
@@ -152,7 +174,7 @@
       <div class="output">
         {#await currentRequest}
           <Skeleton height="1.3em" width="18em" />
-        {:then _}
+        {:then}
           {#if translation}
             {translation}
           {:else}
@@ -224,10 +246,37 @@
     margin-bottom: 0.5rem;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    min-height: 2.25rem;
   }
 
-  .language-display-source span {
+  .language-display-source .char-count {
     color: var(--dark-grey);
+    line-height: 2.25rem;
+  }
+
+  .source-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 2.25rem;
+  }
+
+  .icon-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+  }
+
+  /* Match other icon buttons (no extra hover background) */
+  .icon-btn svg {
+    width: 1.25rem;
+    height: 1.25rem;
   }
 
   .language-display-target {
