@@ -271,6 +271,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 6px;
+    color: black;
   }
 
   /* Match other icon buttons (no extra hover background) */
